@@ -149,7 +149,7 @@
       <div class="kort">
         <p>Vi har sendt en 6-cifret kode til <b>${sikker(email)}</b>. Læs den i din mail (også på PC'en) og tast den her.</p>
         <label for="kode">Kode</label>
-        <input id="kode" class="kode" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••">
+        <input id="kode" class="kode" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="••••••">
         <button class="knap" id="ok">Log ind</button>
         <button class="knap sekundaer" id="igen">Send en ny kode</button>
         <div class="fejl" id="fejl"></div>
@@ -159,7 +159,7 @@
     el('igen').onclick = () => sideLogin();
     el('ok').onclick = async () => {
       const token = el('kode').value.replace(/\D/g, '');
-      if(token.length !== 6){ el('fejl').textContent = 'Koden er 6 cifre.'; return; }
+      if(!/^\d{6,8}$/.test(token)){ el('fejl').textContent = 'Koden er de 6 cifre fra mailen.'; return; }
       el('ok').disabled = true; el('fejl').textContent = '';
       if(!husk){ lavKlient(window.sessionStorage); }
       let res = await sb.auth.verifyOtp({ email, token, type: 'email' });
@@ -326,17 +326,21 @@
     vis(`
       <h1>Privatliv</h1>
       <div class="kort">
-        <p class="lille-tekst">Udkast til pilotfasen — endelig tekst følger, når dataansvaret er afklaret.</p>
+        <p class="lille-tekst">Gælder VR ITA-sitet og login i VR-brillen. Version 2. november 2026.</p>
         <h2>Formål</h2>
-        <p>At gemme din træningsfremdrift i VR ITA, så du selv kan følge den, og så afdelingen kan se samlet brug (aldrig navne).</p>
+        <p>At gemme din træningsfremdrift i VR ITA, så du selv kan følge den — og så afdelingen kan se samlet brug af brillen. Afdelingstal vises kun som samlede tal (aldrig navne, og først når mindst 5 brugere indgår).</p>
         <h2>Hvad gemmes</h2>
-        <p>Din e-mail, dit navn, afdeling og faggruppe. Dine træningssessioner: scenarie, tidspunkter, interventioner, fejlhandlinger og resultat. Dine logins i brillen: tidspunkt og hvilken brille. Træning som gæst gemmes uden person — kun brillens afdeling.</p>
+        <p><b>Om dig:</b> e-mail, navn, afdeling og faggruppe (oprettet af den, der inviterer dig). <b>Om din træning:</b> scenarie, tidspunkter, dine handlinger i scenariet (interventioner, fejlhandlinger, forløb) og resultatet. <b>Om dine logins:</b> hvornår og i hvilken brille du loggede ind og ud. Træning som gæst gemmes uden person — kun brillens afdeling.</p>
+        <h2>Grundlag</h2>
+        <p>Dit samtykke, som du giver ved første login. Du kan trække det tilbage når som helst ved at bede om sletning — så ophører al gemning af din træning, og du kan fortsat træne som gæst.</p>
         <h2>Hvor og hvor længe</h2>
-        <p>Data ligger hos Supabase i EU. Profilen gemmes, til du beder om sletning; sessioner i højst 2 år (samlede tal beholdes uden person).</p>
+        <p>Data ligger i en database hos Supabase i EU (Paris). Login-koder sendes med e-mail gennem Resend; selve siden vises fra GitHub Pages, som ikke gemmer persondata. Brillen gemmer ingen login mellem brugere og kun midlertidigt rapporter, der venter på net. Din profil gemmes, til du beder om sletning; detaljerede sessioner slettes efter 2 år (samlede tal uden person beholdes). I browseren gemmes kun dit login (90 dage — eller til browseren lukkes, hvis "Husk mig" er fravalgt).</p>
+        <h2>Hvem ser hvad</h2>
+        <p>Du ser dine egne data under Min fremdrift og Min profil. Administrator (den VR-ansvarlige) ser brugere, briller og sessioner for at drive systemet. Data videregives ikke til andre, og navne vises aldrig offentligt.</p>
         <h2>Dine rettigheder</h2>
-        <p>Du kan se og rette dine oplysninger under Min profil og få profil og sessioner slettet ved at skrive til afdelingens VR-ansvarlige. Dine data videregives ikke, og navne vises aldrig offentligt.</p>
+        <p>Indsigt, rettelse, udlevering (eksport) og sletning: skriv til den dataansvarlige nedenfor — sletning sker inden for 30 dage. Du kan klage til Datatilsynet (datatilsynet.dk).</p>
         <h2>Dataansvarlig</h2>
-        <p>[Udfyldes — afklares inden kolleger inviteres.]</p>
+        <p>Søren Bache, SBache.com (CVR 38286277) · <a href="mailto:bache@dadlnet.dk">bache@dadlnet.dk</a>. Databehandlere: Supabase Inc. (database og login, EU-region) og Resend Inc. (e-mail med login-kode).</p>
       </div>
       <a class="knap sekundaer" href="#/">Tilbage</a>
     `);
